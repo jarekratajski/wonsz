@@ -6,14 +6,26 @@ import {Wonsz} from './wonsz';
 
 document.addEventListener('keydown', listener);
 
-
+let drugiWonszKeys:any = {
+    'w' : 'ArrowUp',
+    'a' : 'ArrowLeft',
+    's' : 'ArrowDown',
+    'd' : 'ArrowRight'
+};
 function listener ( e: KeyboardEvent) {
     console.log('key:'+ e.key);
+    let dwkey = drugiWonszKeys[e.key] as string;
+    if (dwkey) {
+        e.stopPropagation();
+        e.preventDefault();
+        drugiWonsz.setDirection(dwkey);
+    }
     if ( e.key.startsWith('Arrow')) {
         e.stopPropagation();
         e.preventDefault();
-        naszWonsz.setDirection(e.key);
+        naszWonsz.setDirection(e.key)
     }
+
     //
 
     return false;
@@ -30,7 +42,13 @@ for ( var i= 0; i < 10; i++ ) {
 }*/
 //drawWonsz(50,50);
 let eggs= new Eggs();
-let naszWonsz = new Wonsz(eggs);
+let wensze:Array<Wonsz> = [];
+
+let naszWonsz = new Wonsz(eggs, wensze, 'one');
+let drugiWonsz = new Wonsz(eggs, wensze, 'two');
+
+wensze.push(naszWonsz);
+wensze.push(drugiWonsz);
 
 
 eggs.draw();
@@ -39,6 +57,7 @@ eggs.draw();
 function goForward() {
     if (gameState =='play') {
         naszWonsz.go();
+        drugiWonsz.go();
     }
 }
 

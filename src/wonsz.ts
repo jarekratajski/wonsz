@@ -8,9 +8,9 @@ export class Wonsz {
   direction: string = 'ArrowUp';
   wonszLength: number = 6;
 
-  segments: Array<Segment> = [];
+  public segments: Array<Segment> = [];
 
-  constructor(private eggs : Eggs) {
+  constructor(private eggs : Eggs,private allSnakes : Array<Wonsz>, private name : string) {
     this.x = maxWidth - 1;
     this.y = maxHeight - 1;
   }
@@ -20,14 +20,14 @@ export class Wonsz {
     //this.segments.forEach(s => s.redraw());
   }
   checkWonsz(){
-
-    let zjedzon = this.segments.find(kawalWensza => (kawalWensza.x == this.x ) && (kawalWensza.y == this.y));
-    if (zjedzon != null){
-        updateGameState('gameOver');
-        this.segments.forEach( s => s.remove());
-        this.segments = [];
-        this.wonszLength = 6;
+    let zjedzon = this.allSnakes.find( s => s.hasSegment(this.x, this.y));
+    if (zjedzon ){
+      //updateGameState('gameOver');
+      this.segments.forEach( s => s.remove());
+      this.segments = [];
+      this.wonszLength = 6;
     }
+   
 
     let scoreOut = document.getElementsByClassName('score').item(0)
     scoreOut.textContent = ''+this.wonszLength;
@@ -48,7 +48,7 @@ export class Wonsz {
     }
     this.checkWonsz();
 
-    let newSegment = new Segment(this.x, this.y);
+    let newSegment = new Segment(this.x, this.y, this.name);
     this.segments.push(newSegment);
     if (this.segments.length >= this.wonszLength) {
       let removed = this.segments.shift();
@@ -121,7 +121,6 @@ export class Wonsz {
     if ( this.allowedDir(key)) {
       this.direction = key;
     }
-
   }
 
   private allowedDir( key : string) : boolean {
@@ -129,6 +128,11 @@ export class Wonsz {
   }
 
 
+  hasSegment(x:number, y:number): boolean {
+    let zjedzon = this.segments.find(kawalWensza => (kawalWensza.x == x ) && (kawalWensza.y == y));
+    return zjedzon != null;
+   
+  }
 }
 
 function isOpposite( dir1: string, dir2: string) {
@@ -140,8 +144,9 @@ function isOpposite( dir1: string, dir2: string) {
 class Segment {
   element : HTMLElement = null;
 
-  constructor(public  x: number, public y: number) {
+  constructor(public  x: number, public y: number, name : string) {
       this.element = drawEtwas(this.x, this.y,'wonsz');
+      this.element.classList.add(name);
   }
 
   remove() {

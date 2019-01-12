@@ -1,6 +1,6 @@
 
-export const maxWidth = 300;
-export const maxHeight = 200;
+export const maxWidth = 80;
+export const maxHeight = 45;
 
 //
 export function drawEtwas(x: number, y: number, className : string) : HTMLElement {
